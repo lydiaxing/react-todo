@@ -8,8 +8,10 @@ class TodoList extends React.Component {
         <Todo
           task={todo.task}
           completed={todo.completed}
-          xClick={(index) => this.props.todoXClick(index)}
+          toggleClick={(id) => this.props.toggleClick(id)}
           key={todo._id}
+          id={todo._id}
+          deleteClick={(id) => this.props.deleteClick(id)}
         />
       )}
     </ul>);

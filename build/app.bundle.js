@@ -1594,18 +1594,22 @@ var TodoApp = function (_React$Component) {
   }
 
   _createClass(TodoApp, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
+    key: 'refresh',
+    value: function refresh() {
       var _this2 = this;
 
       _axios2.default.get(dbUrl + '/all').then(function (response) {
-        console.log(response.data);
         _this2.setState({
           todos: response.data
         });
       }).catch(function (error) {
         console.log(error);
       });
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.refresh();
     }
   }, {
     key: 'addTodo',
@@ -1625,23 +1629,46 @@ var TodoApp = function (_React$Component) {
     }
   }, {
     key: 'removeTodo',
-    value: function removeTodo(index) {
-      console.log('index', index);
+    value: function removeTodo(id) {
+      var _this4 = this;
+
+      _axios2.default.delete(dbUrl + '/delete/' + id).then(function (resp) {
+        _this4.refresh();
+      }).catch(function (error) {
+        console.log(error);
+      });
+    }
+  }, {
+    key: 'toggleTodo',
+    value: function toggleTodo(id) {
+      var _this5 = this;
+
+      _axios2.default.post(dbUrl + '/toggle/' + id).then(function (resp) {
+        _this5.refresh();
+      }).catch(function (error) {
+        console.log(error);
+      });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _this4 = this;
+      var _this6 = this;
 
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(_InputLine2.default, { submit: function submit(text) {
-            return _this4.addTodo(text);
+            return _this6.addTodo(text);
           } }),
-        _react2.default.createElement(_TodoList2.default, { todos: this.state.todos, todoXClick: function todoXClick(index) {
-            return _this4.removeTodo(index);
-          } })
+        _react2.default.createElement(_TodoList2.default, {
+          todos: this.state.todos,
+          toggleClick: function toggleClick(id) {
+            return _this6.toggleTodo(id);
+          },
+          deleteClick: function deleteClick(id) {
+            return _this6.removeTodo(id);
+          }
+        })
       );
     }
   }]);
@@ -2724,12 +2751,26 @@ var Todo = function (_React$Component) {
           {
             className: "btn btn-light",
             onClick: function onClick() {
-              return _this2.props.xClick();
+              return _this2.props.toggleClick(_this2.props.id);
             }
           },
           _react2.default.createElement("i", { className: "fa fa-check" })
         ),
-        task
+        _react2.default.createElement(
+          "div",
+          { className: "task" },
+          task
+        ),
+        _react2.default.createElement(
+          "button",
+          {
+            className: "btn btn-light",
+            onClick: function onClick() {
+              return _this2.props.deleteClick(_this2.props.id);
+            }
+          },
+          _react2.default.createElement("i", { className: "fa fa-times" })
+        )
       );
     }
   }]);
@@ -2789,10 +2830,14 @@ var TodoList = function (_React$Component) {
           return _react2.default.createElement(_Todo2.default, {
             task: todo.task,
             completed: todo.completed,
-            xClick: function xClick(index) {
-              return _this2.props.todoXClick(index);
+            toggleClick: function toggleClick(id) {
+              return _this2.props.toggleClick(id);
             },
-            key: todo._id
+            key: todo._id,
+            id: todo._id,
+            deleteClick: function deleteClick(id) {
+              return _this2.props.deleteClick(id);
+            }
           });
         })
       );
