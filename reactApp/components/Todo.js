@@ -13,7 +13,7 @@ class Todo extends React.Component {
 
       <div className="task">{task}</div>
       <button
-        className="btn btn-light"
+        className="btn btn-light float-right"
         onClick={() => this.props.deleteClick(this.props.id)}
       >
         <i className="fa fa-times"></i>

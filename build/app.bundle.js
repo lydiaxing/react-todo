@@ -2764,7 +2764,7 @@ var Todo = function (_React$Component) {
         _react2.default.createElement(
           "button",
           {
-            className: "btn btn-light",
+            className: "btn btn-light float-right",
             onClick: function onClick() {
               return _this2.props.deleteClick(_this2.props.id);
             }

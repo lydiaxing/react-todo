@@ -30,9 +30,13 @@ router.delete('/delete/:id', (req, res) => {
 });
 
 router.post('/toggle/:id', (req, res) => {
-  TodoItem.findbyIdAndUpdate(req.parms.id, { $set: { completed: true }}, (err, doc) => {
-    res.send(doc);
-  });
+  TodoItem.findById(req.params.id)
+    .then((doc) => {
+      return TodoItem.findByIdAndUpdate(req.params.id, { $set: { completed: !doc.completed }})
+    })
+    .then((doc) => {
+      res.send(doc);
+    });
 });
 
 module.exports = router;
